@@ -1,2 +1,2 @@
-yarn fmt:check
-yarn lint
+pnpm fmt:check
+pnpm lint
