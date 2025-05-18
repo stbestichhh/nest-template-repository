@@ -24,8 +24,8 @@ FROM base AS deps
 # Leverage a cache mount to /root/.yarn to speed up subsequent builds.
 # Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
 # into this layer.
-COPY package.json yarn.lock ./
-RUN yarn install --production
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --production
 
 ################################################################################
 # Create a stage for building the application.
@@ -33,13 +33,13 @@ FROM deps AS build
 
 # Download additional development dependencies before building, as some projects require
 # "devDependencies" to be installed to build. If you don't need this, remove this step.
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
 # Copy the rest of the source files into the image.
 COPY . .
 # Run the build script.
-RUN yarn run build
+RUN pnpm build
 
 ################################################################################
 # Create a new stage to run the application with minimal runtime dependencies
@@ -67,4 +67,4 @@ COPY .production.env ./
 EXPOSE 9180
 
 # Run the application.
-CMD yarn start:prod
+CMD pnpm start:prod
